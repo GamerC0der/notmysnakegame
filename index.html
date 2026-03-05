@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Snake — Discord Activity</title>
+    <link rel="stylesheet" href="./src/style.css">
+</head>
+
+<body tabindex="0">
+    <div id="main-menu">
+        <div class="menu-container">
+            <div class="menu-title">SNAKE</div>
+            <div class="menu-tabs">
+                <button type="button" class="menu-tab active" data-tab="play">PLAY</button>
+                <button type="button" class="menu-tab" data-tab="skins">SKINS</button>
+                <button type="button" class="menu-tab" data-tab="coins">COINS</button>
+            </div>
+            <div id="play-panel" class="menu-panel active">
+                <div class="menu-start-actions">
+                    <button class="jump-in-button start-game-button" data-mode="play">Play</button>
+                </div>
+            </div>
+            <div id="skins-panel" class="menu-panel">
+                <div class="skin-nav">
+                    <button class="skin-nav-btn" id="skin-prev">◀</button>
+                    <div class="skin-view-sections">
+                        <div class="skin-view-section" data-skin-view="classic" data-skin="classic" data-cost="0">
+                            <div class="shop-snake-preview">
+                                <canvas id="skin-preview-classic" width="240" height="135"></canvas>
+                            </div>
+                            <div class="skin-section-meta">
+                                <div class="skin-label" id="skin-title">Classic</div>
+                                <div class="shop-section-desc">OWNED</div>
+                            </div>
+                            <button class="shop-skin-action" data-shop-skin="classic" data-shop-cost="0">EQUIP</button>
+                        </div>
+                        <div class="skin-view-section" data-skin-view="rainbow" data-skin="rainbow" data-cost="100">
+                            <div class="shop-snake-preview">
+                                <canvas id="skin-preview-rainbow" width="240" height="135"></canvas>
+                            </div>
+                            <div class="skin-section-meta">
+                                <div class="skin-label">Rainbow</div>
+                                <div class="shop-section-desc">100 COINS</div>
+                            </div>
+                            <button class="shop-skin-action" data-shop-skin="rainbow" data-shop-cost="100">BUY</button>
+                        </div>
+                        <div class="skin-view-section" data-skin-view="phantom" data-skin="phantom" data-cost="100">
+                            <div class="shop-snake-preview">
+                                <canvas id="skin-preview-phantom" width="240" height="135"></canvas>
+                            </div>
+                            <div class="skin-section-meta">
+                                <div class="skin-label">Phantom</div>
+                                <div class="shop-section-desc">100 COINS</div>
+                            </div>
+                            <button class="shop-skin-action" data-shop-skin="phantom" data-shop-cost="100">BUY</button>
+                        </div>
+                        <div class="skin-view-section" data-skin-view="candy" data-skin="candy" data-cost="150">
+                            <div class="shop-snake-preview">
+                                <canvas id="skin-preview-candy" width="240" height="135"></canvas>
+                            </div>
+                            <div class="skin-section-meta">
+                                <div class="skin-label">Candy</div>
+                                <div class="shop-section-desc">150 COINS</div>
+                            </div>
+                            <button class="shop-skin-action" data-shop-skin="candy" data-shop-cost="150">BUY</button>
+                        </div>
+                        <div class="skin-view-section" data-skin-view="lava" data-skin="lava" data-cost="250">
+                            <div class="shop-snake-preview">
+                                <canvas id="skin-preview-lava" width="240" height="135"></canvas>
+                            </div>
+                            <div class="skin-section-meta">
+                                <div class="skin-label">Lava</div>
+                                <div class="shop-section-desc">250 COINS</div>
+                            </div>
+                            <button class="shop-skin-action" data-shop-skin="lava" data-shop-cost="250">BUY</button>
+                        </div>
+                        <div class="skin-view-section" data-skin-view="solar" data-skin="solar" data-cost="250">
+                            <div class="shop-snake-preview">
+                                <canvas id="skin-preview-solar" width="240" height="135"></canvas>
+                            </div>
+                            <div class="skin-section-meta">
+                                <div class="skin-label">Solar</div>
+                                <div class="shop-section-desc">250 COINS</div>
+                            </div>
+                            <button class="shop-skin-action" data-shop-skin="solar" data-shop-cost="250">BUY</button>
+                        </div>
+                        <div class="skin-view-section" data-skin-view="neon" data-skin="neon" data-cost="300">
+                            <div class="shop-snake-preview">
+                                <canvas id="skin-preview-neon" width="240" height="135"></canvas>
+                            </div>
+                            <div class="skin-section-meta">
+                                <div class="skin-label">Neon</div>
+                                <div class="shop-section-desc">300 COINS</div>
+                            </div>
+                            <button class="shop-skin-action" data-shop-skin="neon" data-shop-cost="300">BUY</button>
+                        </div>
+                    </div>
+                    <button class="skin-nav-btn" id="skin-next">▶</button>
+                </div>
+                <div id="skin-indicators" class="skin-indicators"></div>
+            </div>
+            <div id="coins-panel" class="menu-panel">
+                <div id="coins-display">COINS: 0</div>
+            </div>
+        </div>
+    </div>
+
+    <div id="game-wrapper">
+        <div id="game-container">
+            <div id="ui">
+                <div id="score" class="score">SCORE: 0</div>
+                <div id="scoreboard"></div>
+                <div id="in-game-vote" style="display: none;">
+                    <div id="vote-timer">
+                        VOTING ENDS IN: --</div>
+                    <div id="vote-options"></div>
+                </div>
+            </div>
+            <div id="status-text" style="display: none;"></div>
+        </div>
+    </div>
+
+    <script type="module" src="./src/main.js"></script>
+</body>
+
+</html>

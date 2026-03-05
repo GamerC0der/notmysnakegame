@@ -1,0 +1,97 @@
+--- server/index.js
++++ server/index.js
+@@ -3,8 +3,48 @@
+ 
+ const GRID_SIZE = 20;
+-const MOVE_SPEED_MS = 150;
++
++const ALL_LEVELS = [
++  { id: 'l1', name: 'Meadow', diff: 'EASY', speed: 160, base1: 0x1a3300, base2: 0x2a4d00, wall: 0x66cc00 },
++  { id: 'l2', name: 'Ocean', diff: 'EASY', speed: 160, base1: 0x001a33, base2: 0x002a4d, wall: 0x0066cc },
++  { id: 'l3', name: 'Desert', diff: 'EASY', speed: 160, base1: 0x332600, base2: 0x4d3900, wall: 0xcc9900 },
++  { id: 'l4', name: 'Snow', diff: 'EASY', speed: 160, base1: 0x2b3d40, base2: 0x3d5459, wall: 0xaad4e5 },
++  { id: 'l5', name: 'Cave', diff: 'EASY', speed: 160, base1: 0x111111, base2: 0x222222, wall: 0x666666 },
++  { id: 'l6', name: 'Sky', diff: 'EASY', speed: 160, base1: 0x00334d, base2: 0x004d66, wall: 0x00ccff },
++  { id: 'l7', name: 'Volcano', diff: 'MEDIUM', speed: 110, base1: 0x330000, base2: 0x4d0000, wall: 0xcc0000 },
++  { id: 'l8', name: 'Swamp', diff: 'MEDIUM', speed: 110, base1: 0x1a1a00, base2: 0x2a2a00, wall: 0x666600 },
++  { id: 'l9', name: 'Ruins', diff: 'MEDIUM', speed: 110, base1: 0x221a33, base2: 0x332a4d, wall: 0x9966cc },
++  { id: 'l10', name: 'Abyss', diff: 'HARD', speed: 70, base1: 0x0a0a0a, base2: 0x141414, wall: 0x330066 },
++  { id: 'l11', name: 'Neon', diff: 'HARD', speed: 70, base1: 0x001414, base2: 0x002929, wall: 0x00ffcc },
++  { id: 'l12', name: 'Inferno', diff: 'HARD', speed: 70, base1: 0x290000, base2: 0x3d0000, wall: 0xff3300 },
++];
++
++let currentLevel = ALL_LEVELS[0];
++let voteOptions = [];
++let votes = {};
++let voteTimer = 30;
++
++function pickVoteOptions() {
++  const easy = ALL_LEVELS.filter(l => l.diff === 'EASY').sort(()=>0.5-Math.random()).slice(0, 2);
++  const med = ALL_LEVELS.filter(l => l.diff === 'MEDIUM').sort(()=>0.5-Math.random()).slice(0, 1);
++  const hard = ALL_LEVELS.filter(l => l.diff === 'HARD').sort(()=>0.5-Math.random()).slice(0, 1);
++  voteOptions = [...easy, ...med, ...hard];
++  votes = {};
++  voteTimer = 30;
++}
++pickVoteOptions();
++
++setInterval(() => {
++  voteTimer--;
++  if (voteTimer <= 0) {
++    const counts = {};
++    voteOptions.forEach(o => counts[o.id] = 0);
++    Object.values(votes).forEach(vid => { if(counts[vid]!==undefined) counts[vid]++; });
++    let best = voteOptions[0];
++    let max = -1;
++    for (const opt of voteOptions) {
++      if (counts[opt.id] > max) { max = counts[opt.id]; best = opt; }
++    }
++    currentLevel = best;
++    pickVoteOptions();
++    broadcastState(io);
++  }
++}, 1000);
+ 
+ const snakes = new Map();
+@@ -35,11 +75,21 @@
+ 
+ function broadcastState(io) {
++  const voteCounts = {};
++  voteOptions.forEach(o => voteCounts[o.id] = 0);
++  Object.values(votes).forEach(vid => { if (voteCounts[vid] !== undefined) voteCounts[vid]++; });
++
+   const payload = {
+     snakes: Object.fromEntries(
+       [...snakes.entries()].map(([sid, s]) => [
+         sid,
+         { body: s.body, color: s.color, alive: s.alive, score: s.score }
+       ])
+     ),
+-    fruits: [...fruits]
++    fruits: [...fruits],
++    levelSync: {
++      current: currentLevel,
++      options: voteOptions,
++      timer: voteTimer,
++      counts: voteCounts
++    }
+   };
+   io.emit('state', payload);
+@@ -53,5 +103,5 @@
+   setInterval(() => {
+     const current = Date.now();
+-    if (current - lastUpdate < MOVE_SPEED_MS) return;
++    if (current - lastUpdate < currentLevel.speed) return;
+     lastUpdate = current;
+ 
+@@ -148,4 +198,10 @@
+     broadcastState(io);
+   });
++
++  socket.on('vote', (lvlId) => {
++    const opt = voteOptions.find(o => o.id === lvlId);
++    if (opt) votes[socket.id] = lvlId;
++    broadcastState(io);
++  });
+ });
+ 
